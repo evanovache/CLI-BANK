@@ -5,10 +5,11 @@ public class CurrentAccount extends Account{
         super(accountHolderName, balance, pin);
     }
 
-    public void withdraw(double amount) throws InsufficientFundsException {
+    public void withdraw(double amount) throws InsufficientFundsException, InvalidInputException {
         if (getBalance() - amount < OVERDRAFT_LIMIT) {
             throw new InsufficientFundsException("Overdraft limit exceeded");
         }
+        updateBalance(getBalance() - amount);
     }
 
     @Override
