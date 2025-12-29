@@ -6,6 +6,7 @@ public class SavingsAccount extends Account{
         super(accountHolderName, balance, pin);
     }
 
+    @Override
     public void withdraw(double amount) throws InvalidInputException, InsufficientFundsException {
         if (amount < 0) 
             throw new InvalidInputException("Amount must be positive");
