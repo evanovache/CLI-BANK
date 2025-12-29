@@ -29,14 +29,7 @@ public class BankService {
         throws AccountNotFoundException, InsufficientFundsException, InvalidInputException {
             Account account = findAccount(accountNumber);
 
-            if (account instanceof SavingsAccount) {
-                SavingsAccount temp = (SavingsAccount) account;
-                temp.withdraw(amount);
-
-        } else if (account instanceof CurrentAccount) {
-                CurrentAccount temp = (CurrentAccount) account;
-                temp.withdraw(amount);
-        }
+           account.withdraw(amount);
         account.addTransaction(new Transaction(amount, TransactionType.WITHDRAWAL));
     }
 
