@@ -45,6 +45,8 @@ public abstract class Account implements Authenticatable{
 
     public abstract double calculateInterest();
 
+    public abstract void withdraw(double amount) throws InsufficientFundsException, InvalidInputException;
+
     @Override
     public boolean verifyPin(int pin) {
         return this.pin == pin;
