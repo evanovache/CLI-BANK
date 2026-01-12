@@ -33,7 +33,7 @@ public class Main {
             if (choice >= 1 && choice <= 3)
                 break;
             else
-                System.out.println("Choice invalid! (1 - 3)");
+                System.out.print("Choice invalid! (1 - 3): ");
             } catch (InputMismatchException e) {
                 System.out.print("Input Invalid!! Try again: ");
                 in.nextLine();
@@ -65,7 +65,7 @@ public class Main {
                     }
                     }
                   
-                    System.out.println("Enter Initial Deposit: ");
+                    System.out.print("Enter Initial Deposit: ");
                     double initialDeposit = 0.0;
                     while (true) {
                     try {
@@ -79,37 +79,22 @@ public class Main {
                         in.nextLine();
                     }
                     }
+                    in.nextLine();
+                    System.out.print("Enter password: ");
 
-                    System.out.println("Enter a 4 digit pin: ");
-
-                    int pin = 0;
-
-                    while (true) {
-                    try {
-                    pin = in.nextInt();
-                    if (pin > 999 && pin < 10000)
-                        break;
-                    else
-                        System.out.println("PIN must be 4 digits!!");
-                    } catch (InputMismatchException e) {
-                        System.out.print("Input invalid!! Try again: ");
-                        in.nextLine();
-                    } 
-                    }
+                    String password = in.nextLine();
 
                     Account account;
                     if (accountType == 1)
-                    account = new SavingsAccount(name, initialDeposit, pin);
+                    account = new SavingsAccount(name, initialDeposit, password);
                     else
-                        account = new CurrentAccount(name, initialDeposit, pin);
+                        account = new CurrentAccount(name, initialDeposit, password);
 
                     bank.addAccount(account);
                     System.out.println("Account Created!!!\nYour account number is: " + account.getAccountNumber());
                     System.out.print("Press Enter to continue: ");
                     in.nextLine();
-                    in.nextLine();
                     break;
-
 
 
                 case 2:
@@ -124,26 +109,37 @@ public class Main {
                         in.nextLine();
                     }
                     }
-                    System.out.print("Enter your pin: ");
+                    in.nextLine();
+                    System.out.print("Enter your password: ");
 
-                    while (true) {
-                    try {
-                    pin = in.nextInt();
-                    break;
-                    } catch (InputMismatchException e) {
-                        System.out.print("Input Invalid!! Try again: ");
-                        in.nextLine();
-                    }
-                    }
+                    password = in.nextLine();
 
-                    if (bank.validate(accountNo, pin)) {
+                    if (bank.validatePassword(accountNo, password)) {
                         while (true) {
 
                         try {
                             
+                        Account acc = bank.findAccount(accountNo);
+                        if (acc.getPin() == 0) {
+                            clearScreen();
+                            System.out.print("Enter a 4 digit PIN to secure deposits and withdrawals: ");
+                            /////////////////////////////////////////////////////////***********TEST */
+                            while (true) {
+                                try {
+                                int pin = in.nextInt();
+                                acc.setPin(pin);
+                                break;
+                                } catch (InvalidFormatException e) {
+                                    System.out.println(e.getMessage() + " Try again!!");
+                                } catch (InputMismatchException e) {
+                                    System.out.println("Invalid input!!!!");
+                                    in.nextLine();
+                                }
+                            }
+                        }
+
                         clearScreen();
-                        Account acc;
-                        System.out.println("****APEX BANKING****");
+                        System.out.println("Welcome, " + acc.getAccountHolderName());
                         System.out.println("1. Check Balance");
                         System.out.println("2. Deposit");
                         System.out.println("3. Withdrawal");
@@ -158,7 +154,7 @@ public class Main {
                         if (choice >= 1 && choice <= 5) 
                             break;
                         else
-                            System.out.println("Choice Invalid!!");
+                            System.out.print("Choice Invalid!! (1-5): ");
                         } catch (InputMismatchException e) {
                             System.out.print("Input Invalid!! Try again: ");
                             in.nextLine();
@@ -168,61 +164,109 @@ public class Main {
                         switch (choice) {
 
                             case 1: 
-                                try {
-                                acc = bank.findAccount(accountNo);
-                                System.out.println("Your balance is $" + acc.getBalance());
-                                } catch (AccountNotFoundException e) {
-                                System.out.println(e.getMessage());
+                                clearScreen();
+                                System.out.println("*******Check Balance********");
+                                System.out.print("Enter your PIN: ");
+                                int pin = in.nextInt();
+
+                                if (bank.validatePin(accountNo, pin)) {
+                                    System.out.println("Your balance is $" + acc.getBalance());
+                                    enter();
+                                    in.nextLine();
+                                    in.nextLine();
+                                    break;
                                 }
-                                enter();
-                                in.nextLine();
-                                in.nextLine();
-                                break;
-                            
+                                else {
+                                    System.out.println("Invalid PIN!!");
+                                    enter();
+                                    in.nextLine();
+                                    in.nextLine();
+                                    break;
+                                }
                         
                             case 2:
-                                System.out.print("Enter amount you want to deposit: ");
-                                double amount = in.nextDouble();
-                                try {
-                                bank.deposit(accountNo, amount);
-                                System.out.println("An amount of $" + amount + " has been deposited succesfully");
-                                } catch (Exception e) {
-                                    System.out.println(e.getMessage());
+                                clearScreen();
+                                System.out.println("*********Deposit**********");
+                                System.out.print("Enter your PIN: ");
+                                pin = in.nextInt();
+
+                                if (bank.validatePin(accountNo, pin)) {
+                                    System.out.print("Enter amount you want to deposit: ");
+                                    double amount = in.nextDouble();
+                                    try {
+                                    bank.deposit(accountNo, amount);
+                                    System.out.println("An amount of $" + amount + " has been deposited succesfully");
+                                    } catch (Exception e) {
+                                        System.out.println(e.getMessage());
+                                    }
+                                    enter();
+                                    in.nextLine();
+                                    in.nextLine();
+                                    break;
                                 }
-                                enter();
-                                in.nextLine();
-                                in.nextLine();
-                                break;
+                                else {
+                                    System.out.println("Invalid PIN!!");
+                                    enter();
+                                    in.nextLine();
+                                    in.nextLine();
+                                    break;
+                                }
 
-                        
+                                
                             case 3: 
-                            System.out.print("Enter amount you want to withdraw: ");
-                            amount = in.nextDouble();
-                            try {
-                                bank.withdraw(accountNo, amount);
-                                System.out.println("An amount of $" + amount + " has been withdrawn successfully");
-                            } catch (Exception e) {
-                                System.out.println(e.getMessage());
-                            }
-                            enter();
-                            in.nextLine();
-                            in.nextLine();
-                            break;
+                                clearScreen();
+                                System.out.println("*********Withdraw**********");
+                                System.out.print("Enter your PIN: ");
+                                pin = in.nextInt();
 
+                                if (bank.validatePin(accountNo, pin)) {
+                                    System.out.print("Enter amount you want to withdraw: ");
+                                    double amount = in.nextDouble();
+                                    try {
+                                        bank.withdraw(accountNo, amount);
+                                        System.out.println("An amount of $" + amount + " has been withdrawn successfully");
+                                    } catch (Exception e) {
+                                        System.out.println(e.getMessage());
+                                    }
+                                    enter();
+                                    in.nextLine();
+                                    in.nextLine();
+                                    break;
+                                }
+                                else {
+                                    System.out.println("Invalid PIN!!");
+                                    enter();
+                                    in.nextLine();
+                                    in.nextLine();
+                                    break;
+                                }
 
                             case 4: 
-                                List<Transaction> transactions = bank.getMiniStatement(accountNo);
-                                if (transactions.isEmpty())
-                                    System.out.println("There are no transactions");
-                                for (Transaction t : transactions) 
-                                    System.out.println(t.getTypeOfTransaction() + " $" + t.getAmount() + 
-                                    " " + t.getTimeOfTransaction());
-                                System.out.println();
-                                enter();
-                                in.nextLine();
-                                in.nextLine();
-                                break;
+                                clearScreen();
+                                System.out.println("*********Mini-Statement*********");
+                                System.out.print("Enter your PIN: ");
+                                pin = in.nextInt();
 
+                                if (bank.validatePin(accountNo, pin)) { 
+                                    List<Transaction> transactions = bank.getMiniStatement(accountNo);
+                                    if (transactions.isEmpty())
+                                        System.out.println("There are no transactions");
+                                    for (Transaction t : transactions) 
+                                        System.out.println(t.getTypeOfTransaction() + " $" + t.getAmount() + 
+                                        " " + t.getTimeOfTransaction());
+                                    System.out.println();
+                                    enter();
+                                    in.nextLine();
+                                    in.nextLine();
+                                    break;
+                                }
+                                else {
+                                    System.out.println("Invalid PIN!!");
+                                    enter();
+                                    in.nextLine();
+                                    in.nextLine();
+                                    break;
+                                }
 
                             case 5:
                                 break;
@@ -239,7 +283,7 @@ public class Main {
                     else {
                         System.out.println("Wrong account number or PIN");
                     }
-                    System.out.println("Press Enter to continue: ");
+                    System.out.print("Press Enter to continue: ");
                     in.nextLine();
                     in.nextLine();
                     break;

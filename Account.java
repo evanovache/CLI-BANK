@@ -6,13 +6,15 @@ public abstract class Account implements Authenticatable{
     private String accountHolderName;
     private long accountNumber;
     private double balance;
+    String password;
     int pin;
     private List<Transaction> transactions;
 
-    Account (String accountHolderName, double balance, int pin) {
+    Account (String accountHolderName, double balance, String password) {
         this.accountHolderName = accountHolderName;
         this.balance = balance;
-        this.pin = pin;
+        this.pin = 0;
+        this.password = password;
         accountNumber = accountID++;
         transactions = new ArrayList<>();
     }
@@ -35,6 +37,17 @@ public abstract class Account implements Authenticatable{
         this.balance += balance;
     }
 
+    public void setPin(int pin) throws InvalidFormatException {
+        if (pin > 999 && pin < 10000)
+            this.pin = pin;
+        else 
+            throw new InvalidFormatException("PIN must have only 4 digits");
+    }
+
+    public int getPin() {
+        return pin;
+    }
+
     public List<Transaction> getTransactions() {
         return transactions;
     }
@@ -45,8 +58,14 @@ public abstract class Account implements Authenticatable{
 
     public abstract double calculateInterest();
 
+    public abstract void withdraw(double amount) throws InsufficientFundsException, InvalidInputException;
+
     @Override
     public boolean verifyPin(int pin) {
         return this.pin == pin;
+    }
+
+    public boolean verifyPassword(String password) {
+        return this.password.equals(password);
     }
 }

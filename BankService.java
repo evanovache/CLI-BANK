@@ -29,23 +29,24 @@ public class BankService {
         throws AccountNotFoundException, InsufficientFundsException, InvalidInputException {
             Account account = findAccount(accountNumber);
 
-            if (account instanceof SavingsAccount) {
-                SavingsAccount temp = (SavingsAccount) account;
-                temp.withdraw(amount);
-
-        } else if (account instanceof CurrentAccount) {
-                CurrentAccount temp = (CurrentAccount) account;
-                temp.withdraw(amount);
-        }
-        account.addTransaction(new Transaction(amount, TransactionType.WITHDRAWAL));
+            account.withdraw(amount);
+            account.addTransaction(new Transaction(amount, TransactionType.WITHDRAWAL));
     }
 
-    public boolean validate (long accountNumber, int pin) {
+    public boolean validatePin (long accountNumber, int pin) {
         Account account = accounts.get(accountNumber);
         if (account == null) {
             return false;
         }
         return account.verifyPin(pin);
+    }
+
+    public boolean validatePassword (long accountNumber, String password) {
+        Account account = accounts.get(accountNumber);
+        if (account == null) {
+            return false;
+        }
+        return account.verifyPassword(password);
     }
 
     public List<Transaction> getMiniStatement(long accountNumber) throws AccountNotFoundException{
