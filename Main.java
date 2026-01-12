@@ -123,7 +123,7 @@ public class Main {
                         if (acc.getPin() == 0) {
                             clearScreen();
                             System.out.print("Enter a 4 digit PIN to secure deposits and withdrawals: ");
-                            /////////////////////////////////////////////////////////***********TEST */
+
                             while (true) {
                                 try {
                                 int pin = in.nextInt();
@@ -139,7 +139,7 @@ public class Main {
                         }
 
                         clearScreen();
-                        System.out.println("Welcome, " + acc.getAccountHolderName());
+                        System.out.println("Welcome, " + acc.getAccountHolderName() + "\t\t" + "Account No: " + acc.getAccountNumber());
                         System.out.println("1. Check Balance");
                         System.out.println("2. Deposit");
                         System.out.println("3. Withdrawal");
@@ -284,7 +284,6 @@ public class Main {
                         System.out.println("Wrong account number or PIN");
                     }
                     System.out.print("Press Enter to continue: ");
-                    in.nextLine();
                     in.nextLine();
                     break;
 
